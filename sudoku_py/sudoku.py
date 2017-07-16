@@ -2,7 +2,7 @@ import argparse
 from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
 # available difficulties / boards
-BOARDS = ['debug', 'n00b', 'l33t', 'error']
+BOARDS = ['debug', 'n00b', 'l33t', 'error', 'easy']
 MARGIN = 20
 SIDE = 50
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9  # WIDTH AND HEIGHT OF THE WHOLE BOARD
@@ -111,6 +111,7 @@ class SudokuUI(Frame):
 	def __clear_answers(self):
 		self.game.start()
 		self.canvas.delete("victory")
+		self.canvas.delete("winner")
 		self.__draw_puzzle()
 
 	# callback for cell clicking
@@ -180,7 +181,7 @@ class SudokuUI(Frame):
 				self.__draw_victory()
 
 	# draw victory helper method
-	def __draw_victory():
+	def __draw_victory(self):
 		# create an oval (initialized as a circle)
 		x0 = y0 = MARGIN + SIDE * 2
 		x1 = y1 = MARGIN + SIDE * 7
@@ -270,11 +271,11 @@ class SudokuGame(object):
 			if not self.__check_row(row):
 				return False
 		for column in xrange(9):
-			if not self.__check_column(column):
+			if not self.__check_col(column):
 				return False
 		for row in xrange(3):
 			for column in xrange(3):
-				if not self.__check_square(row, column):
+				if not self.__check_sqr(row, column):
 					return False
 		self.game_over = True
 		return True
@@ -286,9 +287,9 @@ class SudokuGame(object):
 		return self.__check_block(self.puzzle[row])
 
 	def __check_col(self, col):
-		return self.__check_block([self.puzzle[row][column] for row in xrange(9)])
+		return self.__check_block([self.puzzle[row][col] for row in xrange(9)])
 
-	def __check_sqr(self, sqr):
+	def __check_sqr(self, row, col):
 		return self.__check_block(
 			[
 				self.puzzle[r][c]
